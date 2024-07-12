@@ -35,7 +35,6 @@ user_agents = [
 user_agent = random.choice(user_agents)
 print(f"* Parser has started")
 print(f"= User agent for today is \"{user_agent}\"")
-#markdown_output = "# [Modscraft MCPE downloads](https://wavEye-Project.github.io/modscraft_mcpe_apk)"
 markdown_output = f"- :open_file_folder: Source available at [**Modscraft**](https://modscraft.net/en/mcpe/)"
 markdown_output += f"\n- :clock2: Updated **every day** at `00:00:00 UTC`"
 markdown_output += f"\n- :rocket: **Last update:** `{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC`\n"
@@ -44,19 +43,20 @@ resp = requests.get("https://modscraft.net/en/mcpe/", headers={"User-Agent": use
 if not resp.ok:
     print(f"! Modscraft returned {resp.status_code}")
     sys.exit(1)
-for release in re.findall(r'<a href="([^"]+)">Changelogs<\/a>', resp.text):
-    print(f"\n= Starting work on version ", end='')
+soup = bs4.BeautifulSoup(resp.text, "html.parser")
+releases = {i.text: i["href"] for i in soup.find("div", class_="versions-history").find_all("a")}
+
+for title, release in releases.items():
+    print(f"\n= Starting work on version {title}")
     ver = requests.get(release, headers={"User-Agent": user_agent})
     if not ver.ok:
         print(f"! Modscraft returned {resp.status_code}")
         sys.exit(1)
-    soup = bs4.BeautifulSoup(ver.text, "html.parser")
-    title = soup.find("h1", class_="article-title").text
-    print(title)
-    markdown_output += f"\n## :package: {title}\n"
+    rel_soup = bs4.BeautifulSoup(ver.text, "html.parser")
+    markdown_output += f"\n<details><summary>&#128230; <b>Minecraft {title}</b></summary>\n\n"
     markdown_output += "| Download | Size |\n"
     markdown_output += "|----------|------|\n"
-    for download in soup.find_all("a", class_="download-item"):
+    for download in rel_soup.find_all("a", class_="download-item"):
         print("* Adding file ", end='')
         down_req = requests.get(download["href"], headers={"User-Agent": user_agent})
         if not down_req.ok:
@@ -70,6 +70,7 @@ for release in re.findall(r'<a href="([^"]+)">Changelogs<\/a>', resp.text):
         size = down_spans[2].text[1:-1]
         download_link = f"https://modscraft.net/en/downloads/{download_id}"
         markdown_output += f"| [:inbox_tray: `{file_name}`]({download_link}) | {size} \n"
+    markdown_output += "\n</details>\n\n"
     print(f"= Finished work on version {title}")
 print("\n= All done, writing to file")
 try:
