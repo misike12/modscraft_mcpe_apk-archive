@@ -1,7 +1,7 @@
 # [Modscraft MCPE downloads](https://wavEye-Project.github.io/modscraft_mcpe_apk)
 - :open_file_folder: Source available at [**Modscraft**](https://modscraft.net/en/mcpe/)
 - :clock2: Updated **every day** at `00:00:00 UTC`
-- :rocket: **Last update:** `2024-07-12 18:05:07 UTC`
+- :rocket: **Last update:** `2024-07-12 18:05:58 UTC`
 
 ## :package: Minecraft 1.21.2.02
 | Download | Size |
