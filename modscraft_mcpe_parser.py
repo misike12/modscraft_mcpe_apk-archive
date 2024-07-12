@@ -35,8 +35,8 @@ user_agents = [
 user_agent = random.choice(user_agents)
 print(f"* Parser has started")
 print(f"= User agent for today is \"{user_agent}\"")
-markdown_output = "# [Modscraft MCPE downloads](https://wavEye-Project.github.io/modscraft_mcpe_apk)"
-markdown_output += f"\n- :open_file_folder: Source available at [**Modscraft**](https://modscraft.net/en/mcpe/)"
+#markdown_output = "# [Modscraft MCPE downloads](https://wavEye-Project.github.io/modscraft_mcpe_apk)"
+markdown_output = f"- :open_file_folder: Source available at [**Modscraft**](https://modscraft.net/en/mcpe/)"
 markdown_output += f"\n- :clock2: Updated **every day** at `00:00:00 UTC`"
 markdown_output += f"\n- :rocket: **Last update:** `{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC`\n"
 print("* Getting releases")
