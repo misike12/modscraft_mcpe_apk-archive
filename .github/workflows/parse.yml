@@ -7,6 +7,7 @@ on:
 
 jobs:
   run-script:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
