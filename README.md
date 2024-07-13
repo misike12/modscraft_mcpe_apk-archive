@@ -1,4 +1,4 @@
-# Modscraft MCPE APK downloads
+# ModsCraft MCPE APK downloads
 
 ## :zap: Available [here](https://wavEye-Project.github.io/modscraft_mcpe_apk)
 

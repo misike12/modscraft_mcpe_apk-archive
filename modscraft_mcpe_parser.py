@@ -35,13 +35,13 @@ user_agents = [
 user_agent = random.choice(user_agents)
 print(f"* Parser has started")
 print(f"= User agent for today is \"{user_agent}\"")
-markdown_output = f"- :open_file_folder: Source available at [**Modscraft**](https://modscraft.net/en/mcpe/)"
-markdown_output += f"\n- :clock2: Updated **every day** at `00:00:00 UTC`"
+markdown_output = f"- :open_file_folder: Source available at [**ModsCraft.Net**](https://modscraft.net/en/mcpe/)"
+markdown_output += f"\n- :clock2: Updated **every 12 hours** at `00:00 UTC` and `12:00 UTC`"
 markdown_output += f"\n- :rocket: **Last update:** `{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC`\n"
 print("* Getting releases")
 resp = requests.get("https://modscraft.net/en/mcpe/", headers={"User-Agent": user_agent})
 if not resp.ok:
-    print(f"! Modscraft returned {resp.status_code}")
+    print(f"! ModsCraft returned {resp.status_code}")
     sys.exit(1)
 soup = bs4.BeautifulSoup(resp.text, "html.parser")
 releases = {i.text: i["href"] for i in soup.find("div", class_="versions-history").find_all("a")}
@@ -50,7 +50,7 @@ for title, release in releases.items():
     print(f"\n= Starting work on version {title}")
     ver = requests.get(release, headers={"User-Agent": user_agent})
     if not ver.ok:
-        print(f"! Modscraft returned {resp.status_code}")
+        print(f"! ModsCraft returned {resp.status_code}")
         sys.exit(1)
     rel_soup = bs4.BeautifulSoup(ver.text, "html.parser")
     markdown_output += f"\n<details><summary>&#128230; <b>Minecraft {title}</b></summary>\n\n"
@@ -60,7 +60,7 @@ for title, release in releases.items():
         print("* Adding file ", end='')
         down_req = requests.get(download["href"], headers={"User-Agent": user_agent})
         if not down_req.ok:
-            print(f"! Modscraft returned {resp.status_code}")
+            print(f"! ModsCraft returned {resp.status_code}")
             sys.exit(1)
         apk = bs4.BeautifulSoup(down_req.text, "html.parser")
         download_id = re.search(r'id=(\d+)', download["href"]).group(1)
