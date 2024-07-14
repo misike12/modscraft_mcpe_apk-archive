@@ -12,6 +12,15 @@ if len(sys.argv) != 2:
     print("Parses all MCPE releases from Modscraft and writes to specified Markdown file.")
     sys.exit(1)
 
+def pathify(string):
+    return re.sub(r'[^a-z0-9_.-]', '', string.replace(' ', '_').lower())
+
+def create_md_table(data, width):
+    table = f"{'| ' * width}|\n{'|-' * width}|\n"
+    for i in range(0, len(data), width):
+        table += "| " + " | ".join(data[i:i + width]) + " |\n"
+    return table
+
 user_agents = [
     "Mozilla/5.0 (Linux; Android 13; SM-M127G Build/TP1A.220624.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/126.0.6478.134 Mobile Safari/537.36",
     "Mozilla/5.0 (Android 11; Mobile; rv:128.0) Gecko/128.0 Firefox/128.0",
@@ -45,7 +54,7 @@ if not resp.ok:
     sys.exit(1)
 soup = bs4.BeautifulSoup(resp.text, "html.parser")
 releases = {i.text: i["href"] for i in soup.find("div", class_="versions-history").find_all("a")}
-
+version_links = []
 for title, release in releases.items():
     print(f"\n= Starting work on version {title}")
     ver = requests.get(release, headers={"User-Agent": user_agent})
@@ -53,9 +62,9 @@ for title, release in releases.items():
         print(f"! ModsCraft returned {resp.status_code}")
         sys.exit(1)
     rel_soup = bs4.BeautifulSoup(ver.text, "html.parser")
-    markdown_output += f"\n<details><summary>&#128230; <b>Minecraft {title}</b></summary>\n\n"
-    markdown_output += "| Download | Size |\n"
-    markdown_output += "|----------|------|\n"
+    version_output = f"# :package: Minecraft {title} APKs\n"
+    version_output += "| Download | Size |\n"
+    version_output += "|----------|------|\n"
     for download in rel_soup.find_all("a", class_="download-item"):
         print("* Adding file ", end='')
         down_req = requests.get(download["href"], headers={"User-Agent": user_agent})
@@ -69,9 +78,22 @@ for title, release in releases.items():
         print(file_name)
         size = down_spans[2].text[1:-1]
         download_link = f"https://modscraft.net/en/downloads/{download_id}"
-        markdown_output += f"| [:inbox_tray: `{file_name}`]({download_link}) | {size} \n"
-    markdown_output += "\n</details>\n\n"
+        version_output += f"| [:package: `{file_name}`]({download_link}) | :floppy_disk: {size} \n"
     print(f"= Finished work on version {title}")
+    filename = f"mc{pathify(title)}.md"
+    try:
+        with open(filename, "w") as f:
+            f.write(version_output)
+    except PermissionError:
+        print("! Unable to access file, not enough permissions")
+        sys.exit(1)
+    except IOError as e:
+        print(f"! I/O error while writing to file: {e}")
+        sys.exit(1)
+    print("= Adding to main file")
+    version_links.append(f"**[:package: Minecraft {title}]({filename})**")
+markdown_output += f"\n{create_md_table(version_links, 3)}"
+
 print("\n= All done, writing to file")
 try:
     with open(sys.argv[1], "w") as f:
