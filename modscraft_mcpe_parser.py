@@ -62,7 +62,7 @@ for title, release in releases.items():
         print(f"! ModsCraft returned {resp.status_code}")
         sys.exit(1)
     rel_soup = bs4.BeautifulSoup(ver.text, "html.parser")
-    version_output = f"## :zap: Minecraft {title} APKs\n"
+    version_output = f"## Minecraft {title} APKs\n"
     version_output += "| Download | Size |\n"
     version_output += "|----------|------|\n"
     for download in rel_soup.find_all("a", class_="download-item"):
