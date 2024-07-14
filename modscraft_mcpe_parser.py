@@ -1,4 +1,5 @@
 import re
+import os
 import random
 import sys
 from datetime import datetime, timezone
@@ -47,6 +48,9 @@ print(f"= User agent for today is \"{user_agent}\"")
 markdown_output = f"- :open_file_folder: Source available at [**ModsCraft.Net**](https://modscraft.net/en/mcpe/)"
 markdown_output += f"\n- :clock2: Updated **every 12 hours** at `00:00 UTC` and `12:00 UTC`"
 markdown_output += f"\n- :rocket: **Last update:** `{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC`\n"
+print("* Creating directory 'version'")
+writedir = os.path.dirname(sys.argv[1])
+os.makedirs(os.path.join(writedir, "version"), exist_ok=True)
 print("* Getting releases")
 resp = requests.get("https://modscraft.net/en/mcpe/", headers={"User-Agent": user_agent})
 if not resp.ok:
@@ -82,7 +86,7 @@ for title, release in releases.items():
     print(f"= Finished work on version {title}")
     filename = f"mc{pathify(title)}.md"
     try:
-        with open(filename, "w") as f:
+        with open(os.path.join(writedir, "version", filename), "w") as f:
             f.write(version_output)
     except PermissionError:
         print("! Unable to access file, not enough permissions")
@@ -91,12 +95,12 @@ for title, release in releases.items():
         print(f"! I/O error while writing to file: {e}")
         sys.exit(1)
     print("= Adding to main file")
-    version_links.append(f"**[:package: Minecraft {title}]({filename})**")
+    version_links.append(f"**[:package: Minecraft {title}](version/{filename})**")
 markdown_output += f"\n{create_md_table(version_links, 3)}"
 
 print("\n= All done, writing to file")
 try:
-    with open(sys.argv[1], "w") as f:
+    with open(os.path.join(sys.argv[1]), "w") as f:
         f.write(markdown_output)
 except PermissionError:
     print("! Unable to access file, not enough permissions")
@@ -104,4 +108,4 @@ except PermissionError:
 except IOError as e:
     print(f"! I/O error while writing to file: {e}")
     sys.exit(1)
-print(f"* Wrote to {sys.argv[1]} successfully")
+print(f"* Wrote to '{sys.argv[1]}' successfully")
