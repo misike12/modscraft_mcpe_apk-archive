@@ -1,7 +1,6 @@
 - :open_file_folder: Source available at [**ModsCraft.Net**](https://modscraft.net/en/mcpe/)
 - :clock2: Updated **every 12 hours** at `00:00 UTC` and `12:00 UTC`
-- :rocket: **Last update:** `2024-10-12 13:48:01 UTC`
-- :warning: Compressed APK means music is **NO** music in the game!!!
+- :rocket: **Last update:** `2024-10-13 00:51:31 UTC`
 
 | | | |
 |-|-|-|
